@@ -1,0 +1,37 @@
+# General
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+
+# IDEs
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.history/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/out-tsc/
+frontend/bazel-out/
+frontend/coverage/
+
+# Backend
+backend/backend/target/
+backend/backend/.mvn/
+backend/backend/help.mvn
+backend/backend/.classpath
+backend/backend/.project
+backend/backend/.settings/
+backend/backend/bin/
+
+# Environment
+.env
+.env.*
+! .env.example

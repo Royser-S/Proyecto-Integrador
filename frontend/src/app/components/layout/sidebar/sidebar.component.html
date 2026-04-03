@@ -1,0 +1,58 @@
+<aside class="w-80 bg-[#0f172a] h-screen flex flex-col border-r border-white/5 relative overflow-hidden">
+  <!-- Sidebar Background Accent -->
+  <div class="absolute -top-24 -left-24 w-64 h-64 bg-indigo-600/10 blur-[100px] rounded-full"></div>
+  <div class="absolute top-1/2 -right-32 w-64 h-64 bg-violet-600/5 blur-[100px] rounded-full"></div>
+
+  <!-- Logo Area -->
+  <div class="p-8 relative z-10">
+    <div class="flex items-center gap-4 group cursor-pointer">
+      <div class="w-12 h-12 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-600/20 group-hover:rotate-6 transition-transform duration-500">
+        <lucide-icon name="box" class="text-white opacity-90" [size]="28"></lucide-icon>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-xl font-black text-white tracking-tighter font-outfit uppercase leading-tight">Sudcom</span>
+        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] leading-none mt-0.5">Gestión de Activos</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 px-4 space-y-2 mt-4 relative z-10 custom-scrollbar overflow-y-auto">
+    <div *ngFor="let item of menuItems">
+      <a [routerLink]="item.path" 
+         routerLinkActive="active" 
+         class="nav-link group overflow-hidden">
+        <div class="active-indicator"></div>
+        <lucide-icon [name]="item.icon" 
+                    [size]="20"
+                    class="nav-icon"></lucide-icon>
+        <span class="font-bold text-sm tracking-wide group-hover:translate-x-1 transition-transform">{{ item.label }}</span>
+        
+        <!-- Hover Glow -->
+        <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+      </a>
+    </div>
+  </nav>
+
+  <!-- User & Logout Footer -->
+  <div class="p-6 space-y-4 relative z-10">
+    <!-- User Card -->
+    <div class="p-4 bg-white/5 border border-white/10 rounded-[1.5rem] flex items-center gap-4 group/user hover:bg-white/10 transition-colors">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20 flex items-center justify-center border border-white/10">
+        <lucide-icon name="user" class="text-indigo-400" [size]="18"></lucide-icon>
+      </div>
+      <div class="flex flex-col min-w-0">
+        <span class="text-xs font-black text-white uppercase truncate font-outfit tracking-wide">Admin User</span>
+        <span class="text-[10px] font-bold text-slate-500 uppercase truncate tracking-tighter">Administrator</span>
+      </div>
+    </div>
+
+    <!-- Logout Button -->
+    <button (click)="onLogout()" 
+            class="w-full px-6 py-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 font-black text-[11px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all active:scale-95 group/logout overflow-hidden relative">
+      <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover/logout:translate-x-[100%] transition-transform duration-700"></div>
+      <lucide-icon name="log-out" [size]="16" class="group-hover/logout:translate-x-1 transition-transform"></lucide-icon>
+      <span class="relative z-10">Cerrar Sesión</span>
+    </button>
+  </div>
+</aside>

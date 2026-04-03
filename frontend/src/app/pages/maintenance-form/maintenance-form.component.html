@@ -1,0 +1,134 @@
+<div class="max-w-4xl mx-auto animate-fade-in p-2">
+  <!-- Header -->
+  <div class="flex items-center gap-4 mb-8">
+    <button (click)="cancel()" 
+            class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:border-indigo-200 transition-all shadow-sm">
+      <lucide-icon name="arrow-left" [size]="18"></lucide-icon>
+    </button>
+    <div>
+      <h1 class="text-3xl font-bold text-slate-900 tracking-tight font-outfit">
+        {{ isEdit ? 'Editar Mantenimiento' : 'Programar Mantenimiento' }}
+      </h1>
+      <p class="text-slate-500 font-medium">Define los detalles técnicos y responsables del servicio</p>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <div class="glass-card rounded-[2.5rem] border border-white/40 shadow-2xl shadow-slate-200/40 overflow-hidden bg-white/60 backdrop-blur-xl p-8 lg:p-12">
+    <form #maintenanceForm="ngForm" (ngSubmit)="onSubmit()" class="space-y-10">
+      
+      <!-- Section 1: Asset Selection -->
+      <div class="space-y-6">
+        <div class="flex items-center gap-3 pb-2 border-b border-slate-100">
+          <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-500 flex items-center justify-center">
+            <lucide-icon name="monitor" [size]="16"></lucide-icon>
+          </div>
+          <h3 class="text-sm font-black uppercase tracking-widest text-slate-400">Equipo a Intervenir</h3>
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-1">Seleccionar Activo</label>
+          <div class="relative group">
+            <lucide-icon name="monitor" [size]="18" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors z-10"></lucide-icon>
+            <select name="equipment" [(ngModel)]="maintenance.equipment" 
+                    [compareWith]="compareEquipments" required
+                    class="w-full pl-12 pr-10 py-3.5 bg-white/50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700 appearance-none cursor-pointer">
+              <option [ngValue]="null" disabled>Seleccione un equipo...</option>
+              <option *ngFor="let eq of equipments" [ngValue]="eq">
+                {{ eq.nombre }} - {{ eq.codigo }} ({{ eq.modelo }})
+              </option>
+            </select>
+            <lucide-icon name="chevron-down" [size]="16" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></lucide-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Details -->
+      <div class="space-y-6">
+        <div class="flex items-center gap-3 pb-2 border-b border-slate-100">
+          <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center">
+            <lucide-icon name="calendar" [size]="16"></lucide-icon>
+          </div>
+          <h3 class="text-sm font-black uppercase tracking-widest text-slate-400">Planificación y Responsables</h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label class="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-1">Fecha Programada</label>
+            <div class="relative group">
+              <lucide-icon name="calendar" [size]="18" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors"></lucide-icon>
+              <input type="date" name="fecha" [(ngModel)]="maintenance.fecha" required
+                     class="w-full pl-12 pr-4 py-3.5 bg-white/50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-semibold text-slate-700">
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-1">Responsable Técnico</label>
+            <div class="relative group">
+              <lucide-icon name="user" [size]="18" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors"></lucide-icon>
+              <input type="text" name="responsable" [(ngModel)]="maintenance.responsable" 
+                     placeholder="Nombre del técnico" required
+                     class="w-full pl-12 pr-4 py-3.5 bg-white/50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-semibold text-slate-700">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label class="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-1">Tipo de Mantenimiento</label>
+            <div class="relative">
+              <select name="tipoMantenimiento" [(ngModel)]="maintenance.tipoMantenimiento" required
+                      class="w-full px-5 py-3.5 bg-white/50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700 appearance-none cursor-pointer">
+                <option value="PREVENTIVO">PREVENTIVO</option>
+                <option value="CORRECTIVO">CORRECTIVO</option>
+                <option value="PREDICTIVO">PREDICTIVO</option>
+              </select>
+              <lucide-icon name="chevron-down" [size]="16" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></lucide-icon>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-1">Estado Initial</label>
+            <div class="relative">
+              <select name="estado" [(ngModel)]="maintenance.estado" required
+                      class="w-full px-5 py-3.5 bg-white/50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700 appearance-none cursor-pointer">
+                <option value="PENDIENTE">PENDIENTE</option>
+                <option value="EN_PROCESO">EN PROCESO</option>
+                <option value="COMPLETADO">COMPLETADO</option>
+              </select>
+              <lucide-icon name="chevron-down" [size]="16" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></lucide-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Description -->
+      <div class="space-y-6">
+        <div class="flex items-center gap-3 pb-2 border-b border-slate-100">
+          <div class="w-8 h-8 rounded-lg bg-orange-50 text-orange-500 flex items-center justify-center">
+            <lucide-icon name="file-text" [size]="16"></lucide-icon>
+          </div>
+          <h3 class="text-sm font-black uppercase tracking-widest text-slate-400">Descripción del Trabajo</h3>
+        </div>
+
+        <div class="space-y-2">
+          <textarea name="descripcion" [(ngModel)]="maintenance.descripcion" 
+                    placeholder="Detalle el trabajo a realizar o hallazgos..." rows="4"
+                    class="w-full px-5 py-3.5 bg-white/50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-semibold text-slate-700"></textarea>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="pt-8 flex items-center justify-end gap-4 border-t border-slate-100">
+        <button type="button" (click)="cancel()" 
+                class="px-8 py-3.5 text-xs font-black uppercase tracking-[0.2em] text-slate-400 hover:text-slate-600 transition-colors">
+          Cancelar
+        </button>
+        <button type="submit" [disabled]="!maintenanceForm.form.valid"
+                class="px-10 py-3.5 bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-2xl text-xs font-black uppercase tracking-[0.2em] shadow-xl shadow-slate-900/10 hover:shadow-slate-900/40 hover:-translate-y-1 active:translate-y-0 transition-all disabled:opacity-30 disabled:pointer-events-none disabled:grayscale">
+          {{ isEdit ? 'Guardar Cambios' : 'Programar Mantenimiento' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
