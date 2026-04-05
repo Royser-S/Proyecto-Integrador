@@ -1,5 +1,5 @@
 -- Database Schema for: Sistema Web de Gestión de Activos, Mantenimiento y Reportes
--- Sprint 1: Base System Fixed Types (INT -> BIGINT)
+-- Actualizado según Entidades JPA (Spring Boot)
 
 CREATE DATABASE IF NOT EXISTS gestion_equipos;
 USE gestion_equipos;
@@ -17,48 +17,51 @@ CREATE TABLE IF NOT EXISTS usuarios (
 -- 2. Tabla Equipos
 CREATE TABLE IF NOT EXISTS equipos (
     id_equipo BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nombre_equipo VARCHAR(100) NOT NULL,
-    codigo_equipo VARCHAR(50) NOT NULL UNIQUE,
-    ubicacion VARCHAR(100),
-    estado ENUM('OPERATIVO', 'MANTENIMIENTO', 'FUERA_SERVICIO') DEFAULT 'OPERATIVO',
+    nombre VARCHAR(100) NOT NULL,
+    codigo VARCHAR(50) NOT NULL UNIQUE,
     marca VARCHAR(50),
     modelo VARCHAR(50),
-    fecha_adquisicion DATE
+    fecha_adquisicion DATE,
+    ubicacion VARCHAR(100),
+    estado VARCHAR(50) DEFAULT 'ACTIVO'
 );
 
 -- 3. Tabla Mantenimientos
 CREATE TABLE IF NOT EXISTS mantenimientos (
     id_mantenimiento BIGINT AUTO_INCREMENT PRIMARY KEY,
-    id_equipo BIGINT,
+    id_equipo BIGINT NOT NULL,
     fecha_mantenimiento DATE NOT NULL,
-    descripcion TEXT,
-    tipo_mantenimiento ENUM('PREVENTIVO', 'CORRECTIVO') NOT NULL,
     responsable VARCHAR(100),
+    tipo_mantenimiento VARCHAR(50) NOT NULL,
+    descripcion TEXT,
+    estado VARCHAR(50) NOT NULL,
     FOREIGN KEY (id_equipo) REFERENCES equipos(id_equipo) ON DELETE CASCADE
 );
 
--- 4. Tabla Fallas (Fallas reportadas)
+-- 4. Tabla Fallas (Reportadas)
 CREATE TABLE IF NOT EXISTS fallas (
     id_falla BIGINT AUTO_INCREMENT PRIMARY KEY,
-    id_equipo BIGINT,
+    id_equipo BIGINT NOT NULL,
+    id_usuario BIGINT NOT NULL,
+    descripcion TEXT NOT NULL,
     fecha_reporte TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    descripcion_falla TEXT NOT NULL,
-    estado_falla ENUM('PENDIENTE', 'EN_REPARACION', 'SOLUCIONADO') DEFAULT 'PENDIENTE',
-    FOREIGN KEY (id_equipo) REFERENCES equipos(id_equipo) ON DELETE CASCADE
+    estado VARCHAR(50) DEFAULT 'REPORTADA',
+    FOREIGN KEY (id_equipo) REFERENCES equipos(id_equipo) ON DELETE CASCADE,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
 );
 
 -- 5. Tabla Reportes
 CREATE TABLE IF NOT EXISTS reportes (
     id_reporte BIGINT AUTO_INCREMENT PRIMARY KEY,
-    id_usuario BIGINT,
+    id_usuario BIGINT NOT NULL,
     titulo VARCHAR(100) NOT NULL,
-    tipo_reporte VARCHAR(50),
-    fecha_generacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     contenido TEXT,
+    tipo_reporte VARCHAR(50),
+    fecha_generacion DATE NOT NULL,
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
 );
 
--- Datos iniciales
--- Importante: Para el login inicial, usaremos esta contraseña plana y luego la actualizaremos con BCrypt
+-- Datos iniciales de prueba (Contraseña: password)
 INSERT INTO usuarios (nombre, usuario, contrasenia, rol) VALUES 
-('Administrador', 'admin', 'admin123', 'ADMIN');
+('Admin User', 'admin', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqCYAdVqCcL7HWXCuaaupc6X/Eya', 'ADMIN'),
+('Tecnico Juan', 'juan.tecnico', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqCYAdVqCcL7HWXCuaaupc6X/Eya', 'TECNICO');
